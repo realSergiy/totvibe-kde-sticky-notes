@@ -24,7 +24,8 @@ Recipes (via [`just`](https://github.com/casey/just)):
 - `just l` — lint (Biome + QML + SPDX). `-f` to auto-fix.
 - `just tc` — typecheck (runs `lint` first).
 - `just t` — test (runs `typecheck` first).
-- `just m` — push branch, open PR, arm auto-merge (squash).
+- `just p` — push branch, open **draft** PR, arm squash auto-merge, print PR URL, exit.
+- `just p -r` — same, but the PR is (or is flipped to) **ready**; waits for merge, then deletes the remote and local branch.
 - `just r [patch|minor|major]` — bump version, tag, publish GitHub release.
 
 ## License

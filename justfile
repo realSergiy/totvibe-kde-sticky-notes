@@ -3,7 +3,7 @@ set shell := ["bash", "-cu"]
 alias t := test
 alias tc := typecheck
 alias l := lint
-alias m := merge
+alias p := push
 alias r := release
 
 default:
@@ -28,7 +28,7 @@ typecheck *flags: (lint flags)
 test *flags: (typecheck flags)
     bun run test
 
-merge:
+push *flags:
     #!/usr/bin/env bash
     set -euo pipefail
     branch="$(git symbolic-ref --short HEAD)"
@@ -36,13 +36,42 @@ merge:
         echo "refusing to run on main" >&2
         exit 1
     fi
+    ready=0
+    if [[ " {{flags}} " == *" -r "* || " {{flags}} " == *" --ready "* ]]; then
+        ready=1
+    fi
     git push -u origin "$branch"
     if gh pr view --json number >/dev/null 2>&1; then
-        echo "PR already exists for $branch"
+        if [[ "$ready" == "1" ]]; then
+            gh pr ready 2>/dev/null || true
+        fi
     else
-        gh pr create --base main --fill
+        if [[ "$ready" == "1" ]]; then
+            gh pr create --base main --fill
+        else
+            gh pr create --base main --fill --draft
+        fi
     fi
     gh pr merge --auto --squash --delete-branch
+    url="$(gh pr view --json url -q .url)"
+    echo "PR: $url"
+    if [[ "$ready" == "0" ]]; then
+        exit 0
+    fi
+    echo "waiting for PR to merge..."
+    while true; do
+        state="$(gh pr view --json state -q .state)"
+        case "$state" in
+            MERGED) break ;;
+            CLOSED) echo "PR closed without merging" >&2; exit 1 ;;
+            OPEN) sleep 15 ;;
+            *) echo "unexpected PR state: $state" >&2; exit 1 ;;
+        esac
+    done
+    git switch main
+    git pull --ff-only origin main
+    git push origin --delete "$branch" 2>/dev/null || true
+    git branch -D "$branch"
 
 release bump="patch":
     #!/usr/bin/env bash
