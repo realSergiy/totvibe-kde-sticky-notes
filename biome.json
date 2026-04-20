@@ -60,5 +60,9 @@
       "trailingCommas": "none"
     }
   },
-  "plugins": ["./tools/biome-plugins/no-function-keyword.grit"]
+  "plugins": [
+    "./tools/biome-plugins/no-function-keyword.grit",
+    "./tools/biome-plugins/no-explicit-return-type.grit",
+    "./tools/biome-plugins/no-redundant-variable-type.grit"
+  ]
 }
