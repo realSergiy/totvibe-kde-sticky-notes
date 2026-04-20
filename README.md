@@ -9,26 +9,23 @@ a small daemon and a Plasma widget make each one visible on the desktop.
 
 Pre-1.0. See [`spec/plan.md`](spec/plan.md) for the product/tech plan and
 [`spec/README.md`](spec/README.md) for the staged Technical Implementation
-Plans (TIPs). This commit lands TIP 1 (Foundation & Tooling) only — no
-application code yet.
+Plans (TIPs). Landed: TIP 1 (Foundation & Tooling) and TIP 2 (Core Model
+Library — `src/core/`). Next: TIP 3.
 
 ## Build
 
 ```sh
 bun install
-bun run check
+just test
 ```
 
-`bun run check` runs Biome lint, `tsc --noEmit`, the SPDX-header check, and
-the Bun test suite.
+Recipes (via [`just`](https://github.com/casey/just)):
 
-QML lint/format are wired separately and only run when `.qml` files exist
-(TIP 4 onwards):
-
-```sh
-bun run qml:lint
-bun run qml:format
-```
+- `just l` — lint (Biome + QML + SPDX). `-f` to auto-fix.
+- `just tc` — typecheck (runs `lint` first).
+- `just t` — test (runs `typecheck` first).
+- `just m` — push branch, open PR, arm auto-merge (squash).
+- `just r [patch|minor|major]` — bump version, tag, publish GitHub release.
 
 ## License
 
