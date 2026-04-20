@@ -1,0 +1,34 @@
+{
+  "name": "@totvibe/stickynotes",
+  "version": "0.0.0",
+  "private": true,
+  "description": "KDE Plasma 6 sticky notes — files-as-source-of-truth",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "engines": {
+    "bun": ">=1.2"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "spdx": "bun run tools/check-spdx.ts",
+    "qml:lint": "bash tools/qml-lint.sh",
+    "qml:format": "bash tools/qml-format.sh --check",
+    "check": "bun run lint && bun run typecheck && bun run spdx && bun run test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.12",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@types/bun": "latest",
+    "fast-check": "^4.7.0",
+    "lefthook": "^2.1.6",
+    "typescript": "^6.0.3"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
+}

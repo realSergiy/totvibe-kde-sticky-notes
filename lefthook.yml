@@ -1,0 +1,20 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{js,ts,jsx,tsx,json,jsonc}"
+      run: bunx biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+    typecheck:
+      glob: "*.{ts,tsx}"
+      run: bun run typecheck
+    spdx:
+      glob: "*.{ts,tsx,js,jsx,qml}"
+      run: bun run tools/check-spdx.ts {staged_files}
+    qmllint:
+      glob: "*.qml"
+      run: bash tools/qml-lint.sh {staged_files}
+
+commit-msg:
+  commands:
+    commitlint:
+      run: bunx commitlint --edit {1}

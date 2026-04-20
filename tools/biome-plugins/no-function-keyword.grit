@@ -1,0 +1,5 @@
+language js(typescript, jsx)
+
+JsFunctionDeclaration() as $fn where {
+  register_diagnostic(span=$fn, message="Function declarations are banned. Use `const name = (...) => { ... }` instead.")
+}

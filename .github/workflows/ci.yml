@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, Typecheck, Test
+    runs-on: ubuntu-latest
+    container:
+      image: kdeneon/plasma:user
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run check
+        run: bun run check
+
+  qml:
+    name: QML lint/format
+    runs-on: ubuntu-latest
+    container:
+      image: kdeneon/plasma:user
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify QML toolchain
+        run: |
+          qmllint --version
+          qmlformat --version
+
+      - name: qmllint
+        run: bash tools/qml-lint.sh
+
+      - name: qmlformat --check
+        run: bash tools/qml-format.sh --check
