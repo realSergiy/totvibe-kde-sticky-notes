@@ -9,7 +9,7 @@ const SOURCE_RE = /\.(ts|tsx|js|jsx|qml)$/;
 const EXCLUDED_PREFIXES = ['node_modules/', 'dist/', 'package/contents/js/', 'src/widget/generated/'];
 const HEAD_BYTES = 512;
 
-const collect = async (): Promise<string[]> => {
+const collect = async () => {
   const explicit = argv.slice(2).filter((a) => !a.startsWith('-'));
   if (explicit.length > 0) {
     return explicit.filter((p) => SOURCE_RE.test(p));

@@ -1,0 +1,12 @@
+language js(typescript, jsx)
+
+JsVariableDeclarator(variable_annotation=$ann, initializer=$init) where {
+  $ann <: TsTypeAnnotation(ty=$ty),
+  $ty <: not TsUnionType(),
+  $init <: JsInitializerClause(expression=$expr),
+  $expr <: or {
+    JsCallExpression(),
+    JsNewExpression()
+  },
+  register_diagnostic(span=$ann, message="Redundant type annotation. Drop it — TypeScript will infer the same type from the initializer. If you need a different/wider type, use a union or refactor.")
+}

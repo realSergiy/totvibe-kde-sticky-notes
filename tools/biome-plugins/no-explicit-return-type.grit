@@ -1,0 +1,7 @@
+language js(typescript, jsx)
+
+TsReturnTypeAnnotation(ty=$ty) as $ret where {
+  $ty <: not TsPredicateReturnType(),
+  $ty <: not TsAssertsReturnType(),
+  register_diagnostic(span=$ret, message="Explicit function return types are banned. Let TypeScript infer return types; enforce type safety on the consumer side.")
+}
