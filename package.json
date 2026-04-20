@@ -16,8 +16,7 @@
     "test": "bun test",
     "spdx": "bun run tools/check-spdx.ts",
     "qml:lint": "bash tools/qml-lint.sh",
-    "qml:format": "bash tools/qml-format.sh --check",
-    "check": "bun run lint && bun run typecheck && bun run spdx && bun run test"
+    "qml:format": "bash tools/qml-format.sh --check"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",
