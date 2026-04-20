@@ -52,12 +52,13 @@ push *flags:
             gh pr create --base main --fill --draft
         fi
     fi
-    gh pr merge --auto --squash --delete-branch
     url="$(gh pr view --json url -q .url)"
-    echo "PR: $url"
     if [[ "$ready" == "0" ]]; then
+        echo "PR (draft): $url"
         exit 0
     fi
+    gh pr merge --auto --squash --delete-branch
+    echo "PR: $url"
     echo "waiting for PR to merge..."
     while true; do
         state="$(gh pr view --json state -q .state)"
