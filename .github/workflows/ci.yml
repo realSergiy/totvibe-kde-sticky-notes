@@ -39,11 +39,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Verify QML toolchain
-        run: |
-          qmllint --version
-          qmlformat --version
-
       - name: qmllint
         run: bash tools/qml-lint.sh
 
