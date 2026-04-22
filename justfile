@@ -6,9 +6,11 @@ alias l := lint
 alias p := push
 alias r := release
 
+# show available recipes
 default:
     @just --list
 
+# run eslint, QML lint/format, and SPDX check (pass -f/--fix to auto-fix)
 lint *flags:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -22,12 +24,15 @@ lint *flags:
     fi
     bun run spdx
 
+# run lint, then tsc typecheck
 typecheck *flags: (lint flags)
     bun run typecheck
 
+# run typecheck, then the test suite
 test *flags: (typecheck flags)
     bun run test
 
+# push branch and open/update PR; pass -r/--ready to mark ready and auto-merge into main
 push *flags:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -74,6 +79,7 @@ push *flags:
     git push origin --delete "$branch" 2>/dev/null || true
     git branch -D "$branch"
 
+# bump version (major|minor|patch), tag, push, and create a GitHub release
 release bump="patch":
     #!/usr/bin/env bash
     set -euo pipefail
