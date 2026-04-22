@@ -14,10 +14,11 @@
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "spdx": "bun run tools/check-spdx.ts",
-    "qml:lint": "bash tools/qml-lint.sh",
-    "qml:format": "bash tools/qml-format.sh --check",
-    "qml:format:fix": "bash tools/qml-format.sh --write"
+    "build:cli": "bun build --compile --minify src/cli/main.ts --outfile dist/sticky",
+    "spdx": "bun run scripts/check-spdx.ts",
+    "qml:lint": "bash scripts/qml-lint.sh",
+    "qml:format": "bash scripts/qml-format.sh --check",
+    "qml:format:fix": "bash scripts/qml-format.sh --write"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",
@@ -30,5 +31,8 @@
   },
   "trustedDependencies": [
     "@biomejs/biome"
-  ]
+  ],
+  "dependencies": {
+    "cac": "^7.0.0"
+  }
 }

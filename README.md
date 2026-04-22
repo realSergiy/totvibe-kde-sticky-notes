@@ -9,8 +9,8 @@ a small daemon and a Plasma widget make each one visible on the desktop.
 
 Pre-1.0. See [`spec/plan.md`](spec/plan.md) for the product/tech plan and
 [`spec/README.md`](spec/README.md) for the staged Technical Implementation
-Plans (TIPs). Landed: TIP 1 (Foundation & Tooling) and TIP 2 (Core Model
-Library — `src/core/`). Next: TIP 3.
+Plans (TIPs). Landed: TIP 1 (Foundation & Tooling), TIP 2 (Core Model
+Library — `src/core/`), TIP 3 (`sticky` CLI — `src/cli/`). Next: TIP 4.
 
 ## Build
 

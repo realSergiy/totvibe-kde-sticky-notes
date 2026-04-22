@@ -1,21 +1,23 @@
 name: CI
 
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   check:
     name: Lint, Typecheck, Test
     runs-on: ubuntu-latest
-    container:
-      image: kdeneon/plasma:user
-      options: --user root
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -23,6 +25,14 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+
+      - name: Cache Bun install dir
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -36,12 +46,56 @@ jobs:
       - name: SPDX
         run: bun run spdx
 
+      - name: Build CLI
+        run: bun run build:cli
+
       - name: Test
         run: bun test
+
+      - name: CLI size guard
+        run: |
+          size=$(stat -c%s dist/sticky)
+          soft=$((150 * 1024 * 1024))
+          hard=$((200 * 1024 * 1024))
+          human=$(numfmt --to=iec --suffix=B "$size")
+          echo "sticky binary: $human ($size bytes)"
+          if [ "$size" -gt "$hard" ]; then
+            echo "::error::dist/sticky $human exceeds hard ceiling $(numfmt --to=iec --suffix=B $hard)"
+            exit 1
+          fi
+          if [ "$size" -gt "$soft" ]; then
+            echo "::warning::dist/sticky $human exceeds soft ceiling $(numfmt --to=iec --suffix=B $soft) — investigate before release"
+          fi
+
+      - name: CLI cold-start guard
+        run: |
+          runs=5
+          budget_ms=100
+          times_ms=()
+          for _ in $(seq "$runs"); do
+            t=$( { /usr/bin/time -f '%e' dist/sticky --version >/dev/null ; } 2>&1 )
+            ms=$(awk -v s="$t" 'BEGIN{printf "%.0f", s*1000}')
+            times_ms+=("$ms")
+          done
+          sorted=($(printf '%s\n' "${times_ms[@]}" | sort -n))
+          median=${sorted[$((runs/2))]}
+          echo "cold-start (ms): runs=[${times_ms[*]}]  median=${median}  budget=${budget_ms}"
+          if [ "$median" -gt "$budget_ms" ]; then
+            echo "::error::dist/sticky --version median ${median}ms exceeds ${budget_ms}ms budget"
+            exit 1
+          fi
+
+      - name: Upload CLI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sticky-cli
+          path: dist/sticky
+          if-no-files-found: error
 
   qml:
     name: QML lint/format
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     container:
       image: kdeneon/plasma:user
       options: --user root
@@ -49,7 +103,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: qmllint
-        run: bash tools/qml-lint.sh
+        run: bash scripts/qml-lint.sh
 
       - name: qmlformat --check
-        run: bash tools/qml-format.sh --check
+        run: bash scripts/qml-format.sh --check

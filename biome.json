@@ -61,8 +61,8 @@
     }
   },
   "plugins": [
-    "./tools/biome-plugins/no-function-keyword.grit",
-    "./tools/biome-plugins/no-explicit-return-type.grit",
-    "./tools/biome-plugins/no-redundant-variable-type.grit"
+    "./scripts/biome-plugins/no-function-keyword.grit",
+    "./scripts/biome-plugins/no-explicit-return-type.grit",
+    "./scripts/biome-plugins/no-redundant-variable-type.grit"
   ]
 }

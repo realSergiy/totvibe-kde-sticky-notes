@@ -14,7 +14,7 @@ In:
 - `package/contents/ui/StickyNote.qml` — the visual component (paper rectangle, FontLoader, TextEdit with `MarkdownText`).
 - `package/contents/js/` — compiled JS from `src/widget/**/*.ts` + `src/core/**/*.ts`, ES-module imports into QML.
 - `src/widget/` — widget-side TypeScript: `bootstrap.ts` (locates note id, reads file once, emits text to QML via a property proxy), `palette.ts` (single `const PALETTE = {...}`).
-- `tools/gen-types.ts` — generates `.d.ts` stubs from `main.xml`.
+- `scripts/gen-types.ts` — generates `.d.ts` stubs from `main.xml`.
 - Build pipeline: `bun run build:widget` transpiles TS to JS, copies QML/XML/fonts into a staged `package/` ready for `kpackagetool6 --install`.
 - `qmllint` + `qmlformat --check` pass on all `.qml` files.
 - Local smoke test: `plasmoidviewer -a package/`.
@@ -83,7 +83,7 @@ import "../js/palette.js" as Palette
 
 ## 6. Type generation
 
-`tools/gen-types.ts`:
+`scripts/gen-types.ts`:
 
 - Parses `package/contents/config/main.xml` (KConfigXT schema).
 - Emits `src/widget/generated/configuration.d.ts`:

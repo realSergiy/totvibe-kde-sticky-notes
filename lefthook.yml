@@ -9,10 +9,10 @@ pre-commit:
       run: bun run typecheck
     spdx:
       glob: "*.{ts,tsx,js,jsx,qml}"
-      run: bun run tools/check-spdx.ts {staged_files}
+      run: bun run scripts/check-spdx.ts {staged_files}
     qmllint:
       glob: "*.qml"
-      run: bash tools/qml-lint.sh {staged_files}
+      run: bash scripts/qml-lint.sh {staged_files}
 
 commit-msg:
   commands:

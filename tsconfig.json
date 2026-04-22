@@ -31,6 +31,6 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "tests/**/*", "tools/**/*"],
+  "include": ["src/**/*", "tests/**/*", "scripts/**/*"],
   "exclude": ["node_modules", "dist", "package/contents/js"]
 }
