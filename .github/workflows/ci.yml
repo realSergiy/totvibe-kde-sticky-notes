@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install Bun
         uses: oven-sh/setup-bun@v2
@@ -27,7 +27,7 @@ jobs:
           bun-version: latest
 
       - name: Cache Bun install dir
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
@@ -86,7 +86,7 @@ jobs:
           fi
 
       - name: Upload CLI artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sticky-cli
           path: dist/sticky
@@ -96,11 +96,17 @@ jobs:
     name: QML lint/format
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    container:
-      image: kdeneon/plasma:user
-      options: --user root
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+
+      - name: Install QML tools
+        uses: awalsh128/cache-apt-pkgs-action@v1.6.0
+        with:
+          packages: qt6-declarative-dev-tools
+          version: 1.0
+
+      - name: Add Qt6 bin dir to PATH
+        run: echo "/usr/lib/qt6/bin" >> "$GITHUB_PATH"
 
       - name: qmllint
         run: bash scripts/qml-lint.sh
