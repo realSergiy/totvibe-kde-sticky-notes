@@ -36,7 +36,7 @@ test *flags: (typecheck flags)
 push *flags:
     #!/usr/bin/env bash
     set -euo pipefail
-    branch="$(git symbolic-ref --short HEAD)"
+    branch="$(git branch --show-current)"
     if [[ "$branch" == "main" ]]; then
         echo "refusing to run on main" >&2
         exit 1
@@ -46,38 +46,24 @@ push *flags:
         ready=1
     fi
     git push -u origin "$branch"
-    if gh pr view --json number >/dev/null 2>&1; then
-        if [[ "$ready" == "1" ]]; then
-            gh pr ready 2>/dev/null || true
-        fi
-    else
+    if ! gh pr view --json number >/dev/null 2>&1; then
         if [[ "$ready" == "1" ]]; then
             gh pr create --base main --fill
         else
             gh pr create --base main --fill --draft
         fi
+    elif [[ "$ready" == "1" ]]; then
+        gh pr ready 2>/dev/null || true
     fi
-    url="$(gh pr view --json url -q .url)"
+    read -r pr_number url <<< "$(gh pr view --json number,url -q '"\(.number) \(.url)"')"
     if [[ "$ready" == "0" ]]; then
         echo "PR (draft): $url"
         exit 0
     fi
-    gh pr merge --auto --squash --delete-branch
     echo "PR: $url"
-    echo "waiting for PR to merge..."
-    while true; do
-        state="$(gh pr view --json state -q .state)"
-        case "$state" in
-            MERGED) break ;;
-            CLOSED) echo "PR closed without merging" >&2; exit 1 ;;
-            OPEN) sleep 15 ;;
-            *) echo "unexpected PR state: $state" >&2; exit 1 ;;
-        esac
-    done
-    git switch main
-    git pull --ff-only origin main
-    git push origin --delete "$branch" 2>/dev/null || true
-    git branch -D "$branch"
+    echo "waiting for checks..."
+    gh pr checks "$pr_number" --watch --fail-fast
+    gh pr merge "$pr_number" --squash --delete-branch
 
 # bump version (major|minor|patch), tag, push, and create a GitHub release
 release bump="patch":
