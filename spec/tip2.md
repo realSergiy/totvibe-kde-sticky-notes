@@ -141,7 +141,7 @@ Defaults proceed unless the user objects.
 - `bun test src/core` is green.
 - Coverage ≥ 95 % lines.
 - `tsc --noEmit` is green.
-- A small playground script (`tools/playground-core.ts`) can `createNote("hello")`, `listNotes()`, `upsert` a position, and `flush` without error against `/tmp/totvibe-test/`.
+- A small playground script (`scripts/playground-core.ts`) can `createNote("hello")`, `listNotes()`, `upsert` a position, and `flush` without error against `/tmp/totvibe-test/`.
 - No `import` outside `node:*`, `bun:*`, `fast-check` (zero runtime deps in `src/core/`).
 
 ## 8. Done = ready for TIP 3

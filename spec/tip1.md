@@ -6,7 +6,7 @@
 
 In:
 
-- Repo layout (`src/`, `package/`, `tools/`, `spec/`, `dist/`, `.github/workflows/`).
+- Repo layout (`src/`, `package/`, `scripts/`, `spec/`, `dist/`, `.github/workflows/`).
 - Bun-based dev environment (`package.json`, lockfile, `bunfig.toml` if needed).
 - TypeScript strict config (`tsconfig.json`).
 - Biome lint + format config (`biome.json`).
@@ -50,7 +50,7 @@ Out:
 | `README.md` | one-paragraph description, link to `spec/plan.md`, build status badge placeholder. |
 | `.gitignore` | `node_modules/`, `dist/`, `.bun/`, `*.log`, generated `.d.ts`. |
 | `.editorconfig` | LF, 2-space indent for TS/JSON, 4-space for QML. |
-| `src/.gitkeep`, `package/.gitkeep`, `tools/.gitkeep`, `dist/.gitkeep` | preserve empty dirs. |
+| `src/.gitkeep`, `package/.gitkeep`, `scripts/.gitkeep`, `dist/.gitkeep` | preserve empty dirs. |
 | `tests/sanity.test.ts` | the placeholder `1 + 1` test. |
 
 ## 4. Implementation steps
@@ -62,7 +62,7 @@ Out:
 5. Install Lefthook (`bun add -D lefthook`) and write `lefthook.yml`. Run `bunx lefthook install`.
 6. Install commitlint (`bun add -D @commitlint/cli @commitlint/config-conventional`) and config.
 7. Write GitHub Actions workflows. Use `oven-sh/setup-bun@v2`. Container: `kdeneon/plasma:user`. Cache: Bun's lockfile-keyed cache action.
-8. Add `LICENSE` (fetch from <https://spdx.org/licenses/GPL-3.0-or-later.html>). Add SPDX header rule to Biome (use the `noRestrictedSyntax`-style rule or a custom regex via Biome's `style/useSpdxHeader` if available; fall back to a tiny `tools/check-spdx.ts` script invoked from CI if Biome lacks it).
+8. Add `LICENSE` (fetch from <https://spdx.org/licenses/GPL-3.0-or-later.html>). Add SPDX header rule to Biome (use the `noRestrictedSyntax`-style rule or a custom regex via Biome's `style/useSpdxHeader` if available; fall back to a tiny `scripts/check-spdx.ts` script invoked from CI if Biome lacks it).
 9. Initial commit with `chore: scaffold repo (TIP 1)`. Push, watch CI go green.
 
 ## 5. Acceptance criteria
@@ -78,7 +78,7 @@ Out:
 | Risk | Mitigation |
 | --- | --- |
 | `kdeneon/plasma:user` container drifts or disappears | pin a digest in CI; mirror to GHCR if upstream tag becomes unstable. |
-| Biome doesn't ship an SPDX-header rule | implement the 20-line `tools/check-spdx.ts` fallback now. |
+| Biome doesn't ship an SPDX-header rule | implement the 20-line `scripts/check-spdx.ts` fallback now. |
 | Lefthook conflicts with global git hooks | document the `lefthook install --force` step in README. |
 
 ## 7. Done = ready for TIP 2

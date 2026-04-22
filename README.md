@@ -9,8 +9,8 @@ a small daemon and a Plasma widget make each one visible on the desktop.
 
 Pre-1.0. See [`spec/plan.md`](spec/plan.md) for the product/tech plan and
 [`spec/README.md`](spec/README.md) for the staged Technical Implementation
-Plans (TIPs). Landed: TIP 1 (Foundation & Tooling) and TIP 2 (Core Model
-Library — `src/core/`). Next: TIP 3.
+Plans (TIPs). Landed: TIP 1 (Foundation & Tooling), TIP 2 (Core Model
+Library — `src/core/`), TIP 3 (`sticky` CLI — `src/cli/`). Next: TIP 4.
 
 ## Build
 
@@ -24,7 +24,8 @@ Recipes (via [`just`](https://github.com/casey/just)):
 - `just l` — lint (Biome + QML + SPDX). `-f` to auto-fix.
 - `just tc` — typecheck (runs `lint` first).
 - `just t` — test (runs `typecheck` first).
-- `just m` — push branch, open PR, arm auto-merge (squash).
+- `just p` — push branch, open **draft** PR, print PR URL, exit.
+- `just p -r` — mark PR ready (or create non-draft), arm squash auto-merge, wait for merge, delete remote + local branch.
 - `just r [patch|minor|major]` — bump version, tag, publish GitHub release.
 
 ## License
