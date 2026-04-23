@@ -1,0 +1,21 @@
+{
+  "KPackageStructure": "Plasma/Applet",
+  "KPlugin": {
+    "Id": "com.totvibe.stickynotes",
+    "Name": "Sticky Notes",
+    "Description": "A sticky note bound to a Markdown file under ~/.local/share/totvibe-stickynotes/notes/.",
+    "Category": "Utilities",
+    "Icon": "note",
+    "License": "GPL-3.0-or-later",
+    "Version": "0.0.0",
+    "Authors": [
+      {
+        "Name": "totvibe",
+        "Email": "sergiy.yeskov@gmail.com"
+      }
+    ]
+  },
+  "X-Plasma-API": "declarativeappletscript",
+  "X-Plasma-API-Minimum-Version": "6.6",
+  "X-Plasma-MainScript": "ui/main.qml"
+}

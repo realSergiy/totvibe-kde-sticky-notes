@@ -12,7 +12,7 @@ pre-commit:
       run: bun run scripts/check-spdx.ts {staged_files}
     qmllint:
       glob: "*.qml"
-      run: bash scripts/qml-lint.sh {staged_files}
+      run: bun run qml:lint
 
 commit-msg:
   commands:
