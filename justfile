@@ -28,9 +28,10 @@ lint *flags:
 typecheck *flags: (lint flags)
     bun run typecheck
 
-# run typecheck, then the test suite
+# run typecheck, then the test suite (bun + qml)
 test *flags: (typecheck flags)
     bun run test
+    bun run qml:test
 
 # push branch and open/update PR; pass -r/--ready to mark ready and auto-merge into main
 push *flags:

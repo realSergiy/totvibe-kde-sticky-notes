@@ -35,11 +35,14 @@ const fetchText = (url: string) =>
     xhr.send();
   });
 
-export const loadBoundNote = async (notesDirUrl: string, noteId: string) => {
+export const loadBoundNote = (notesDirUrl: string, noteId: string) => {
   if (!isSafeId(noteId)) {
-    return { id: noteId, content: '', missing: true };
+    return Promise.resolve({ id: noteId, content: '', missing: true });
   }
   const base = notesDirUrl.endsWith('/') ? notesDirUrl.slice(0, -1) : notesDirUrl;
-  const { ok, text } = await fetchText(`${base}/${noteId}.md`);
-  return { id: noteId, content: text, missing: !ok };
+  return fetchText(`${base}/${noteId}.md`).then(({ ok, text }) => ({
+    id: noteId,
+    content: text,
+    missing: !ok,
+  }));
 };

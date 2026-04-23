@@ -26,12 +26,10 @@ Rectangle {
     }
 
     function reload() {
-        // qmllint disable missing-property
         Bootstrap.loadBoundNote(stickyNote.notesDirUrl.toString(), stickyNote.noteId).then(function (note) {
             stickyNote.content = note.content;
             stickyNote.missing = note.missing;
         });
-    // qmllint enable missing-property
     }
 
     onNoteIdChanged: reload()
