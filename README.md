@@ -9,9 +9,16 @@ a small daemon and a Plasma widget make each one visible on the desktop.
 
 Pre-1.0. See [`spec/plan.md`](spec/plan.md) for the product/tech plan and
 [`spec/README.md`](spec/README.md) for the staged Technical Implementation
-Plans (TIPs). Landed: TIP 1 (Foundation & Tooling), TIP 2 (Core Model
-Library — `src/core/`), TIP 3 (`sticky` CLI — `src/cli/`), TIP 4 (read-only
-Plasma widget skeleton — `package/`). Next: TIP 5.
+Plans (TIPs).
+Landed:
+
+- TIP 1 (Foundation & Tooling)
+- TIP 2 (Core Model Library — `src/core/`)
+- TIP 3 (`sticky` CLI — `src/cli/`)
+- TIP 4 (read-only Plasma widget skeleton — `package/`)
+- TIP 5 (widget interactivity: view/edit toggle, auto-save, polled file watcher, position persistence, right-click delete)
+
+Next: TIP 6.
 
 ## Build
 
@@ -36,6 +43,13 @@ bun run build:widget        # transpile TS to package/contents/js/, regenerate P
 bash scripts/install-widget.sh   # kpackagetool6 --install (or --upgrade) into ~/.local/share/plasma/plasmoids/
 plasmoidviewer -a package/  # smoke-test without installing
 ```
+
+The widget reads and writes its note files via QML's `XMLHttpRequest`. Reads
+work out of the box; writes (PUT/DELETE on `file://` URLs) require
+`QML_XHR_ALLOW_FILE_WRITE=1` in the QML engine's environment. The install
+script drops a `~/.config/plasma-workspace/env/totvibe-stickynotes.sh`
+snippet that sets both that variable and `QML_XHR_ALLOW_FILE_READ=1` for
+plasmashell. Log out and back in for it to take effect.
 
 ## License
 

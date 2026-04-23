@@ -7,6 +7,9 @@ RUN apt-get update \
       qml6-module-qtcore \
       qml6-module-qttest \
       qml6-module-qtqml-models \
+      qml6-module-qtquick-controls \
+      qml6-module-qtquick-layouts \
+      qml6-module-qtquick-templates \
       qml6-module-org-kde-kirigami \
  && rm -rf /var/lib/apt/lists/*
 
