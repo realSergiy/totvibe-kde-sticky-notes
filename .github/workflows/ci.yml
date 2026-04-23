@@ -46,6 +46,9 @@ jobs:
       - name: SPDX
         run: bun run spdx
 
+      - name: Build widget package
+        run: bun run build:widget
+
       - name: Build CLI
         run: bun run build:cli
 
@@ -92,24 +95,53 @@ jobs:
           path: dist/sticky
           if-no-files-found: error
 
+      - name: Upload widget package
+        uses: actions/upload-artifact@v7
+        with:
+          name: sticky-widget
+          path: package
+          if-no-files-found: error
+
   qml:
-    name: QML lint/format
+    name: QML lint/format/test
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v6
 
-      - name: Install QML tools
-        uses: awalsh128/cache-apt-pkgs-action@v1.6.0
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          packages: qt6-declarative-dev-tools
-          version: 1.0
+          bun-version: latest
 
-      - name: Add Qt6 bin dir to PATH
-        run: echo "/usr/lib/qt6/bin" >> "$GITHUB_PATH"
+      - name: Build QML container image
+        run: podman build -t localhost/totvibe-qml:qt6 -f scripts/qml.Dockerfile .
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build widget package
+        run: bun run build:widget
 
       - name: qmllint
-        run: bash scripts/qml-lint.sh
+        run: bun run qml:lint
 
       - name: qmlformat --check
-        run: bash scripts/qml-format.sh --check
+        run: bun run qml:format
+
+      - name: qmltestrunner
+        run: bun run qml:test
+
+  ci-gate:
+    name: ci-gate
+    needs: [check, qml]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: verify all upstream jobs succeeded
+        run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') || contains(needs.*.result, 'skipped') }}" == "true" ]]; then
+            echo "one or more upstream jobs did not succeed"
+            exit 1
+          fi

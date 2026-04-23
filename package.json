@@ -9,16 +9,18 @@
     "bun": ">=1.2"
   },
   "scripts": {
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
+    "lint": "biome check --error-on-warnings .",
+    "lint:fix": "biome check --write --error-on-warnings .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "build:cli": "bun build --compile --minify src/cli/main.ts --outfile dist/sticky",
+    "build:widget": "bun run scripts/gen-types.ts && bun run scripts/build-widget.ts",
     "spdx": "bun run scripts/check-spdx.ts",
-    "qml:lint": "bash scripts/qml-lint.sh",
-    "qml:format": "bash scripts/qml-format.sh --check",
-    "qml:format:fix": "bash scripts/qml-format.sh --write"
+    "qml:lint": "podman run --rm -v $PWD:/work:ro -w /work localhost/totvibe-qml:qt6 sh -c 'qmllint -W 0 package/contents/ui/*.qml tests/qml/*.qml'",
+    "qml:test": "podman run --rm -e QML_XHR_ALLOW_FILE_READ=1 -v $PWD:/work:ro -w /work localhost/totvibe-qml:qt6 qmltestrunner -input tests/qml",
+    "qml:format": "podman run --rm -v $PWD:/work:ro -w /work localhost/totvibe-qml:qt6 sh -c 'for f in package/contents/ui/*.qml tests/qml/*.qml; do qmlformat \"$f\" | diff -q \"$f\" - || exit 1; done'",
+    "qml:format:fix": "podman run --rm -v $PWD:/work -w /work localhost/totvibe-qml:qt6 sh -c 'qmlformat -i package/contents/ui/*.qml tests/qml/*.qml'"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",
