@@ -1,0 +1,21 @@
+Title: Sticky Notes
+Category: Plasma 6 Add-Ons / Widgets
+Summary: Sticky notes bound to plain Markdown files under ~/.local/share/totvibe-stickynotes/notes/.
+Description:
+  A native KDE Plasma 6 sticky-note widget. Each note is a plain Markdown file
+  on disk; widgets on the desktop are views onto those files. Edit the files
+  with any text editor — the widget updates live. Drop new files into the
+  notes directory from a file manager — new widgets appear automatically. The
+  notes directory is portable: sync it with Syncthing / Nextcloud / git.
+
+Components:
+  - Plasma 6 widget (com.totvibe.stickynotes) — installed via kpackagetool6.
+  - `sticky` CLI — create / list / edit / delete notes from the shell.
+  - `sticky-watcherd` daemon — autostarts on login, keeps desktop in sync
+    with the notes directory.
+
+License: GPL-3.0-or-later
+Source: https://github.com/realSergiy/totvibe-kde
+Minimum Plasma version: 6.6
+Minimum Qt version: 6.9
+Session: Wayland only (v1)

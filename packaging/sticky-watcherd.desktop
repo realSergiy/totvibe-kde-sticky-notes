@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Sticky Notes Watcher
+Exec=%h/.local/bin/sticky-watcherd
+X-GNOME-Autostart-enabled=true
+OnlyShowIn=KDE;
+NoDisplay=true
+StartupNotify=false

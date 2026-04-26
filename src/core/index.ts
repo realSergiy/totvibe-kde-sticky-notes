@@ -1,4 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+export {
+  createPlasmashellClient,
+  type PlasmashellClient,
+  type PlasmashellClientOptions,
+} from './dbus-plasmashell.ts';
 export { generateNoteId, idFromFilename, isNoteId } from './id.ts';
 export {
   createNote,
