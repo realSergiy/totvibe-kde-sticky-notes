@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "build:cli": "bun build --compile --minify src/cli/main.ts --outfile dist/sticky",
+    "build:daemon": "bun build --compile --minify src/daemon/main.ts --outfile dist/sticky-watcherd",
     "build:widget": "bun run scripts/gen-types.ts && bun run scripts/build-widget.ts",
     "spdx": "bun run scripts/check-spdx.ts",
     "qml:lint": "podman run --rm -v $PWD:/work:ro -w /work localhost/totvibe-qml:qt6 sh -c 'qmllint -W 0 package/contents/ui/*.qml tests/qml/*.qml'",

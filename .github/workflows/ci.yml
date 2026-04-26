@@ -52,23 +52,28 @@ jobs:
       - name: Build CLI
         run: bun run build:cli
 
+      - name: Build daemon
+        run: bun run build:daemon
+
       - name: Test
         run: bun test
 
-      - name: CLI size guard
+      - name: Binary size guard
         run: |
-          size=$(stat -c%s dist/sticky)
           soft=$((150 * 1024 * 1024))
           hard=$((200 * 1024 * 1024))
-          human=$(numfmt --to=iec --suffix=B "$size")
-          echo "sticky binary: $human ($size bytes)"
-          if [ "$size" -gt "$hard" ]; then
-            echo "::error::dist/sticky $human exceeds hard ceiling $(numfmt --to=iec --suffix=B $hard)"
-            exit 1
-          fi
-          if [ "$size" -gt "$soft" ]; then
-            echo "::warning::dist/sticky $human exceeds soft ceiling $(numfmt --to=iec --suffix=B $soft) — investigate before release"
-          fi
+          for bin in dist/sticky dist/sticky-watcherd; do
+            size=$(stat -c%s "$bin")
+            human=$(numfmt --to=iec --suffix=B "$size")
+            echo "$bin: $human ($size bytes)"
+            if [ "$size" -gt "$hard" ]; then
+              echo "::error::$bin $human exceeds hard ceiling $(numfmt --to=iec --suffix=B $hard)"
+              exit 1
+            fi
+            if [ "$size" -gt "$soft" ]; then
+              echo "::warning::$bin $human exceeds soft ceiling $(numfmt --to=iec --suffix=B $soft) — investigate before release"
+            fi
+          done
 
       - name: CLI cold-start guard
         run: |
@@ -93,6 +98,13 @@ jobs:
         with:
           name: sticky-cli
           path: dist/sticky
+          if-no-files-found: error
+
+      - name: Upload daemon artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: sticky-watcherd
+          path: dist/sticky-watcherd
           if-no-files-found: error
 
       - name: Upload widget package
